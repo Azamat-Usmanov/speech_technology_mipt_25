@@ -19,11 +19,11 @@ def spectral_subtraction(noisy_audio, N_fft=1024, H=256, L=800, window_func=None
 
     stft_noisy = stft(noisy_audio, N_fft, H, L, window_func)
     n_frames = stft_noisy.shape[1]
-    frame_energies = np.sum(np.abs(stft_noisy)**2, axis=0)
-    energy_threshold = np.percentile(frame_energies, 40)
-    noise_frames_indices = np.where(frame_energies < energy_threshold)[0]
+    frame_energies = np.sum(np.abs(stft_noisy)**2, axis=0) # вычисляем энергию каждого кадра
+    energy_threshold = np.percentile(frame_energies, 40) # берем порог как 40ой перцентиль энергии
+    noise_frames_indices = np.where(frame_energies < energy_threshold)[0] # выбираем кадры с энергией ниже порога как шумовые
     if len(noise_frames_indices) > 0:
-        noise_spectrum = np.mean(np.abs(stft_noisy[:, noise_frames_indices])**2, axis=1)
+        noise_spectrum = np.mean(np.abs(stft_noisy[:, noise_frames_indices])**2, axis=1) # усредняем шумовые кадры
 
     stft_clean = np.zeros_like(stft_noisy)
     for i in range(n_frames):
